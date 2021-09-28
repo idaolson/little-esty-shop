@@ -5,3 +5,9 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+BulkDiscount.destroy_all
+
+BulkDiscount.create!(name: "Spooky Showdown", discount: 0.20, threshold: 5, merchant_id: 1)
+BulkDiscount.create!(name: "Memorial Day Bonanza", discount: 0.30, threshold: 15, merchant_id: 1)
+BulkDiscount.create!(name: "Wacky Wednesday", discount: 0.10, threshold: 20, merchant_id: 1)
+BulkDiscount.create!(name: "Oops, We Discounted Again!", discount: 0.50, threshold: 50, merchant_id: 1)
