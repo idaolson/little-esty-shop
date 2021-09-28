@@ -6,20 +6,22 @@
 <div class="container px-0">
   <div class="row gx-5">
     <div class="col">
-     <div class="p-3 border bg-light" id="ready-to-ship"><h3>Bulk Discounts</h3>
+     <div class="p-3 border bg-light" <h3>Bulk Discounts</h3>
        <br>
-       <table class="table table-striped table-sm" id="enabled-items">
+       <table class="table table-striped table-sm" id="bulk-discounts">
          <tbody>
            <tr>
              <th>Name</th>
              <th>Discount</th>
              <th>Minimum Quantity</th>
+             <th>Remove Discount</th>
            </tr>
            <% @bulk_discounts.each do |discount| %>
            <tr id="discount-<%= discount.id %>">
              <td><%= link_to discount.name, merchant_bulk_discount_path(@merchant, discount) %></td>
              <td><%= number_to_percentage(discount.percentage, :precision => 0) %></td>
              <td><%= discount.threshold %></td>
+             <td><%= button_to "Delete", merchant_bulk_discount_path(@merchant, discount), method: :delete %></td>
              </tr>
            <% end %>
          </tbody>
@@ -27,9 +29,9 @@
      </div>
     </div>
     <div class="col">
-     <div class="p-3 border bg-light" id="ready-to-ship"><h3>Upcoming Holidays</h3>
+     <div class="p-3 border bg-light" <h3>Upcoming Holidays</h3>
        <br>
-       <table class="table table-striped table-sm" id="enabled-items">
+       <table class="table table-striped table-sm" id="holidays">
          <tbody>
            <tr>
              <th>Holiday</th>
