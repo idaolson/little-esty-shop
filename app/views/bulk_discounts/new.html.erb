@@ -1,5 +1,6 @@
 <%= render partial: "layouts/merchant_header", locals: {merchant: @merchant} %>
+<h1><%= @merchant.name %> </h1>
 
-<h1>New Bulk Discount</h1>
+<h3>New Bulk Discount</h3>
 
 <%= render partial: "bulk_discount_form", locals: {method: :post, model: [@merchant, @bulk_discount]} %>
