@@ -1,4 +1,7 @@
 <%= render partial: "layouts/merchant_header", locals: {merchant: @merchant} %>
+
+<h1><%= @merchant.name %> Discounts</h1>
+<%= button_to "Create New Discount", new_merchant_bulk_discount_path(@merchant), method: :get %>
 <br>
 <div class="container px-0">
   <div class="row gx-5">
