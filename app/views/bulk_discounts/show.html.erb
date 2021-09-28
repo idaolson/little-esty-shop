@@ -1,1 +1,6 @@
-test
+<%= render partial: "layouts/merchant_header", locals: {merchant: @merchant} %>
+<h1><%= @merchant.name %></h1>
+
+<h3><%= @bulk_discount.name %> Discount</h3>
+<h6>Quantity Threshold: <%= @bulk_discount.threshold %></h6>
+<h6>Percentage Discount: <%= number_to_percentage(@bulk_discount.percentage, :precision => 0) %></h6>
