@@ -41,4 +41,12 @@ RSpec.describe "bulk discounts index" do
     expect(page).to have_content("Thanksgiving Day")
     expect(page).to have_content("2021-11-25")
   end
+
+  it "has a link to create a new bulk discount" do
+    visit merchant_bulk_discounts_path(@merchant)
+
+    click_button "Create New Discount"
+
+    expect(current_path).to eq(new_merchant_bulk_discount_path(@merchant))
+  end
 end
