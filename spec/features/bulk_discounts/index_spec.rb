@@ -6,7 +6,7 @@ RSpec.describe "bulk discounts index" do
     @bd1 = @merchant.bulk_discounts.create!(name: "Spooky Showdown", discount: 0.20, threshold: 5)
     @bd2 = @merchant.bulk_discounts.create!(name: "Memorial Day Bonanza", discount: 0.30, threshold: 15)
     @bd3 = @merchant.bulk_discounts.create!(name: "Wacky Wednesday", discount: 0.10, threshold: 20)
-    @bd4 = @merchant.bulk_discounts.create!(name: "Oops, we discounted again!", discount: 0.50, threshold: 50)
+    @bd4 = @merchant.bulk_discounts.create!(name: "Oops, We Discounted Again!", discount: 0.50, threshold: 50)
   end
 
   it "links from merchant dashboard to bulk discounts index" do
@@ -27,5 +27,18 @@ RSpec.describe "bulk discounts index" do
         expect(page).to have_content(discount.threshold)
       end
     end
+  end
+
+  it "displays three upcoming holidays" do
+    visit merchant_bulk_discounts_path(@merchant)
+
+    expect(page).to have_content("Columbus Day")
+    expect(page).to have_content("2021-10-11")
+
+    expect(page).to have_content("Veterans Day")
+    expect(page).to have_content("2021-11-11")
+
+    expect(page).to have_content("Thanksgiving Day")
+    expect(page).to have_content("2021-11-25")
   end
 end
