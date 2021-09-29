@@ -3,6 +3,8 @@ class InvoiceItem < ApplicationRecord
 
   belongs_to :item
   belongs_to :invoice
+  has_one :merchant, through: :item
+  has_many :bulk_discounts, through: :merchant
 
   enum status: [:pending, :packaged, :shipped]
 
@@ -28,5 +30,24 @@ class InvoiceItem < ApplicationRecord
 
   def price_dollars(mult = 1)
     '%.2f' % (unit_price * mult / 100.0)
+  end
+
+
+  def top_discount
+    bulk_discounts.where('bulk_discounts.threshold <= ?', quantity)
+    .order(discount: :desc)
+    .first
+  end
+
+  def revenue
+    unit_price * quantity
+  end
+
+  def discounted_rev
+    if top_discount.nil?
+      revenue
+    else
+      revenue * top_discount.deduct_discount
+    end
   end
 end
