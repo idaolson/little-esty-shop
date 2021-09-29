@@ -4,7 +4,9 @@ RSpec.describe Merchant do
   describe 'relationships' do
     it { should have_many(:items) }
     it { should have_many(:invoices).through :items }
-    it { should have_many(:bulk_discounts) }
+    it { should have_many(:invoice_items).through :items }
+    it { should have_many(:bulk_discounts).dependent(:destroy) }
+    it { should have_many(:items).dependent(:destroy) }
   end
 
   describe 'validations' do
