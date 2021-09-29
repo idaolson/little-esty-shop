@@ -1,7 +1,8 @@
 class Merchant < ApplicationRecord
   has_many :items, dependent: :destroy
   has_many :invoices, through: :items
-  has_many :bulk_discounts
+  has_many :invoice_items, through: :items
+  has_many :bulk_discounts, dependent: :destroy
   validates :name, presence: true
 
   enum status: [:disabled, :enabled]
