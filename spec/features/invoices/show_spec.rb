@@ -32,11 +32,9 @@ RSpec.describe 'Merchant invoices show page' do
     it "shows invoice item" do
       visit "/merchant/#{@merch.id}/invoices/#{@invoice1.id}"
 
-      sum1 = @inv_item1.price_dollars(@inv_item1.quantity)
       within('#items') do
         expect(page).to have_content(@item1.name)
         expect(page).to have_content(@inv_item1.quantity)
-        expect(page).to have_content("$#{sum1}")
         expect(page).to have_content(@inv_item1.status)
 
         expect(page).to have_content(@item2.name)
@@ -47,7 +45,7 @@ RSpec.describe 'Merchant invoices show page' do
      it "shows a drop down selector to change the status" do
        visit merchant_invoice_path(@merch.id, @invoice1.id)
 
-       within("#invoice-item#{@inv_item1.id}") do
+       within("#invoice-item-#{@inv_item1.id}") do
          select(:packaged)
          click_button "Update Status"
        end
@@ -55,7 +53,7 @@ RSpec.describe 'Merchant invoices show page' do
        expect(page).to have_content("Item Updated Successfully")
        expect(current_path).to eq(merchant_invoice_path(@merch.id, @invoice1.id))
 
-       within("#invoice-item#{@inv_item1.id}") do
+       within("#invoice-item-#{@inv_item1.id}") do
          expect(page).to have_content('packaged')
        end
      end
@@ -83,23 +81,45 @@ RSpec.describe 'Merchant invoices show page' do
       @bd4 = @merch1.bulk_discounts.create!(name: "Oops, We Discounted Again!", discount: 0.50, threshold: 50)
     end
 
-
-
     it "shows total invoice revenue without disounts and total discounted revenue incl. bulk discounts" do
       visit merchant_invoice_path(@merch1.id, @invoice.id)
 
       expect(page).to have_content("Total Revenue: $1,428.93")
       expect(page).to have_content("Discounted Revenue: $912.59")
     end
+
+    it "it shows which discount (if any) has been applied and links to bulk discount show page" do
+      visit merchant_invoice_path(@merch1, @invoice)
+
+        within "#invoice-item-#{@ii1.id}" do
+          expect(page).to have_content("n/a")
+        end
+
+        within "#invoice-item-#{@ii2.id}" do
+          expect(page).to have_content("Spooky Showdown")
+          click_link "Spooky Showdown"
+          expect(current_path).to eq(merchant_bulk_discount_path(@merch1, @bd1))
+        end
+
+        visit merchant_invoice_path(@merch1, @invoice)
+
+        within "#invoice-item-#{@ii3.id}" do
+          expect(page).to have_content("Memorial Day Bonanza")
+          click_link "Memorial Day Bonanza"
+          expect(current_path).to eq(merchant_bulk_discount_path(@merch1, @bd2))
+        end
+
+        visit merchant_invoice_path(@merch1, @invoice)
+
+        within "#invoice-item-#{@ii4.id}" do
+          expect(page).to have_content("Oops, We Discounted Again!")
+          click_link "Oops, We Discounted Again!"
+          expect(current_path).to eq(merchant_bulk_discount_path(@merch1, @bd4))
+        end
+
+        visit merchant_invoice_path(@merch1, @invoice)
+
+        expect(page).to have_no_content("Wacky Wednesday")
+    end
   end
 end
-
-# Total Revenue /discounted revenue
-#
-# As a merchant
-# When I visit my merchant invoice show page
-# Then I see the total revenue for my merchant from
-# this invoice (not including discounts)
-# And I see the total discounted revenue for my merchant
-# from this invoice which includes bulk discounts in the
-# calculation
