@@ -22,15 +22,22 @@
         <th scope="col">Item</th>
         <th scope="col">Quantity</th>
         <th scope="col">Price</th>
+        <th scope="col">Discount</th>
         <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
       <% @invoice_items.each do |inv| %>
-      <tr id="invoice-item<%= inv.id %>">
+      <tr id="invoice-item-<%= inv.id %>">
         <td><%= inv.get_item.name %></td>
         <td><%= inv.quantity %></td>
-        <td>$<%= inv.price_dollars(inv.quantity) %></td>
+        <td><%= number_to_currency(inv.price_dollars(inv.quantity)) %></td>
+        <td><% if inv.top_discount.nil? %>
+              n/a
+            <% else %>
+              <%= link_to "#{inv.top_discount.name}", merchant_bulk_discount_path(@merchant, inv.top_discount) %>
+            <% end %>
+        </td>
         <td><%= form_with model: [@merchant, inv], local: true do |f| %>
               <%= f.hidden_field :invoice_id, value: @invoice.id %>
               <%= f.select :status, [:pending, :packaged, :shipped], selected: inv.status %>
