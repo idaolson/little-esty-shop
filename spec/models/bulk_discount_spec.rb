@@ -25,4 +25,8 @@ RSpec.describe BulkDiscount do
     expect(@bd3.percentage.to_i).to eq(10)
     expect(@bd4.percentage.to_i).to eq(50)
   end
+
+  it "subtracts discount percentage from one hundred to get decimal remaining after discount" do
+    expect(@bd1.deduct_discount).to eq(0.8)
+  end
 end
