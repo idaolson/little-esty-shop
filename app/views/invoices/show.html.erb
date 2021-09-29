@@ -6,7 +6,9 @@
   <br>
   <span style="font-size: 20px;"><b style="font-size: 22px;">Created on: </b> <%= @invoice.created_at.strftime("%A, %B %d, %Y") %></span>
   <br>
-  <span style="font-size: 20px;"><b style="font-size: 22px;">Total Revenue: </b> $<%= @invoice_items.total_rev %></span>
+  <span style="font-size: 20px;"><b style="font-size: 22px;">Total Revenue: </b> <%= number_to_currency(@invoice.total_revenue) %></span>
+  <br>
+  <span style="font-size: 20px;"><b style="font-size: 22px;">Discounted Revenue: </b> <%= number_to_currency(@invoice.total_discount_revenue) %></span>
   <br>
   <span style="font-size: 20px;"><b style="font-size: 22px;">Customer: </b> <%= @invoice.customer_name %></span>
   <br>
@@ -37,6 +39,7 @@
         </td>
       </tr>
       <% end %>
+      </tr>
     </tbody>
   </table>
 </div>

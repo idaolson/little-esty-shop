@@ -42,10 +42,10 @@ RSpec.describe Invoice, type: :model do
       @invoice_item_5 = InvoiceItem.create!(item: @dress, invoice: @invoice_3, quantity: 5, unit_price: 2900, status: "packaged", created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
       @invoice_item_6 = InvoiceItem.create!(item: @skirt, invoice: @invoice_3, quantity: 3, unit_price: 2500, status: "packaged", created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
     end
-    it "can gererate a total revenue" do
-      expect(@invoice_1.total_revenue).to eq("36.00")
-      expect(@invoice_2.total_revenue).to eq("18.00")
-      expect(@invoice_3.total_revenue).to eq("260.00")
+    it "can generate a total revenue" do
+      expect(@invoice_1.total_revenue).to eq(36.00)
+      expect(@invoice_2.total_revenue).to eq(18.00)
+      expect(@invoice_3.total_revenue).to eq(260.00)
     end
 
     it "can return the invoice customers full name" do
@@ -101,6 +101,30 @@ RSpec.describe Invoice, type: :model do
       it "returns all invoices for a merchant" do
         expect(Invoice.all_merch_invoices(@merch[0])).to eq([@invoice, @invoice1, @invoice8])
       end
+    end
+  end
+
+  describe "bulk discount methods" do
+    before :each do
+      @merch1 = Merchant.create!(name: "Spirit Halloween")
+      @item1 = @merch1.items.create!(name: "Polly Pocket", description: "So pretty", unit_price: 862, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @item2 = @merch1.items.create!(name: "Cabbage Patch Doll", description: "Cute", unit_price: 1239, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @item3 = @merch1.items.create!(name: "Teddy Ruxpin", description: "Creepy", unit_price: 1543, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @item4 = @merch1.items.create!(name: "Barbie", description: "Gorgeous", unit_price: 2183, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @cust = create(:customer)
+      @invoice = create(:invoice, customer_id: @cust.id)
+      @ii1 = InvoiceItem.create!(item_id: @item1.id, invoice_id: @invoice.id, quantity: 4, unit_price: 2335, status: :shipped, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @ii2 = InvoiceItem.create!(item_id: @item2.id, invoice_id: @invoice.id, quantity: 8, unit_price: 1235, status: :shipped, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @ii3 = InvoiceItem.create!(item_id: @item3.id, invoice_id: @invoice.id, quantity: 26, unit_price: 2342, status: :shipped, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @ii4 = InvoiceItem.create!(item_id: @item4.id, invoice_id: @invoice.id, quantity: 51, unit_price: 1231, status: :shipped, created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
+      @bd1 = @merch1.bulk_discounts.create!(name: "Spooky Showdown", discount: 0.20, threshold: 5)
+      @bd2 = @merch1.bulk_discounts.create!(name: "Memorial Day Bonanza", discount: 0.30, threshold: 15)
+      @bd3 = @merch1.bulk_discounts.create!(name: "Wacky Wednesday", discount: 0.10, threshold: 20)
+      @bd4 = @merch1.bulk_discounts.create!(name: "Oops, We Discounted Again!", discount: 0.50, threshold: 50)
+    end
+
+    it "returns the total revenue including all eligible bulk discounts" do
+      expect(@invoice.total_discount_revenue.round(2)).to eq(912.59)
     end
   end
 end

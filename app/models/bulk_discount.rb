@@ -6,4 +6,8 @@ class BulkDiscount < ApplicationRecord
   def percentage
     discount * 100
   end
+
+  def deduct_discount
+  ((100 - percentage).to_f / 100)
+  end
 end
