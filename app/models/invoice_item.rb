@@ -19,11 +19,6 @@ class InvoiceItem < ApplicationRecord
                .order(:item_id)
   end
 
-  def self.total_rev
-    pennies = self.sum("unit_price * quantity")
-    '%.2f' % (pennies / 100.0)
-  end
-
   def get_item
     Item.find(item_id)
   end
